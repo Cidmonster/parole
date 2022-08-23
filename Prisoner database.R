@@ -14,8 +14,8 @@ prisoners <- prisoners %>% filter(stuff != '' & idnum != '') %>%  arrange(stuff)
 
 
 #Calling tables Ilica created
-people <- read.csv("Prison directory/people.csv")
-charges <- read.csv("Prison directory/charges.csv")
+people <- read.csv("people.csv")
+charges <- read.csv("charges.csv")
 
 head(prisoners)
 
@@ -31,16 +31,19 @@ people <- people %>% separate(X0, into = c("id", "zero"), sep=7)
 people$dob <-  parse_datetime(people$dob)
 people$paroleeligible <-  parse_datetime(people$paroleeligible)
 people$sentencedate <-  parse_datetime(people$sentencedate)
-rename(people, ID)
-deaths <- people %>% filter(status == "R")
+#rename(people, ID)
+released <- people %>% filter(status == "R")
 #people %>% setNames(1:3, c("id", "lastname", "firstname"))
 #colnames(people[1:3]) <- c("id", "lastname", "firstname")
-write.csv(deaths, "Prison deaths.csv")
+write.csv(deaths, "Prison releases")
 
 
 #Joining ODRC directory data to tables of hearing reports
-hearings <- read_xlsx("Parole board hearing reports/Parole Board Query Reports/Parole hearings all.xlsx")
+hearings <- read_xlsx("Parole hearings all.xlsx")
 parolehear <- people %>% right_join(hearings, by = c("id" = "OFFENDER"))
 oldlaw <- parolehear %>% filter(sentencedate < '1996-07-01')
 people %>% filter(sentencedate < '1996-07-01')
+parolehear <- people %>% right_join(hearings, by = c("id" = "OFFENDER"))
+
+oldlawnames<- oldlaw %>%  select(1, 13, 19) %>% distinct()
 
