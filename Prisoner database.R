@@ -32,6 +32,8 @@ people$dob <-  parse_datetime(people$dob)
 people$paroleeligible <-  parse_datetime(people$paroleeligible)
 people$sentencedate <-  parse_datetime(people$sentencedate)
 #rename(people, ID)
+
+#Generating dataset of people listed with R for released, which includes people who died.
 released <- people %>% filter(status == "R")
 #people %>% setNames(1:3, c("id", "lastname", "firstname"))
 #colnames(people[1:3]) <- c("id", "lastname", "firstname")
@@ -45,5 +47,8 @@ oldlaw <- parolehear %>% filter(sentencedate < '1996-07-01')
 people %>% filter(sentencedate < '1996-07-01')
 parolehear <- people %>% right_join(hearings, by = c("id" = "OFFENDER"))
 
-oldlawnames<- oldlaw %>%  select(1, 13, 19) %>% distinct()
-
+#Generating a list of 200 random people convicted before sentencing reform who had parole hearings between 2019 and July 2022
+oldlawnames <- oldlaw %>%  select(1, 3, 4, 5, 9, 19) %>% distinct()
+oldlawnames <- data.table(oldlawnames)
+oldlawsample <- oldlawnames[sample(.N, 200)]
+write.csv(oldlawsample, "Sample of Old Law prisoners.csv")
