@@ -31,7 +31,11 @@ people <- people %>% separate(X0, into = c("id", "zero"), sep=7)
 people$dob <-  parse_datetime(people$dob)
 people$paroleeligible <-  parse_datetime(people$paroleeligible)
 people$sentencedate <-  parse_datetime(people$sentencedate)
-#rename(people, ID)
+
+#Pull universe of people convicted before sentence reform
+alloldlaw <- people %>% filter(sentencedate < '1996-07-01')
+
+
 
 #Generating dataset of people listed with R for released, which includes people who died.
 released <- people %>% filter(status == "R")
